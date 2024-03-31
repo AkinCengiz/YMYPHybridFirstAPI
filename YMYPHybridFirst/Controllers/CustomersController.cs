@@ -26,4 +26,49 @@ public class CustomersController : ControllerBase
             return Ok(categories);
         }
     }
+
+    [HttpPost]
+    public IActionResult Add(Customer customer)
+    {
+        using (var context = new NorthwindContext())
+        {
+            context.Customers.Add(customer);
+            context.SaveChanges();
+            return Ok("Customer added");
+        }
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(string id)
+    {
+        using (var context = new NorthwindContext())
+        {
+            Customer customer = context.Customers.FirstOrDefault(q => q.CustomerId == id);
+            if (customer == null)
+            {
+                return NotFound("Customer found");
+            }
+
+            context.Customers.Remove(customer);
+            context.SaveChanges();
+            return Ok("Customer deleted success");
+        }
+    }
+
+    [HttpPut]
+    public IActionResult Update(Customer customer)
+    {
+        using (var context = new NorthwindContext())
+        {
+            Customer updatedCustomer = context.Customers.FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+            if (updatedCustomer == null)
+            {
+                return NotFound("Customer not found");
+            }
+            updatedCustomer.CompanyName = customer.CompanyName;
+            updatedCustomer.ContactName = customer.ContactName;
+            context.SaveChanges();
+            return Ok("Customer updated success");
+        }
+    }
 }

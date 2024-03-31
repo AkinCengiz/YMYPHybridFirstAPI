@@ -26,4 +26,26 @@ public class ProductController : ControllerBase
             return result;
         }
     }
+
+    [HttpPost("add")]
+    public IActionResult Add(Product product)
+    {
+        using (var context = new NorthwindContext())
+        {
+            context.Products.Add(product);
+            context.SaveChanges();
+            return Ok();
+        }
+    }
+
+    [HttpPost("update")]
+    public IActionResult Update(Product product)
+    {
+        using (var context = new NorthwindContext())
+        {
+            context.Products.Update(product);
+            context.SaveChanges();
+            return Ok();
+        }
+    }
 }
