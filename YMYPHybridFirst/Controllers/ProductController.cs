@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YMYPHybridFirst.Dto;
 using YMYPHybridFirst.Models;
 
 namespace YMYPHybridFirst.Controllers;
@@ -46,6 +47,28 @@ public class ProductController : ControllerBase
             context.Products.Update(product);
             context.SaveChanges();
             return Ok();
+        }
+    }
+
+    [HttpGet("getallproductdetails")]
+    public IActionResult GetAllProductDetails()
+    {
+        using (var context = new NorthwindContext())
+        {
+            var products = (from c in context.Categories
+                join p in context.Products on c.CategoryId equals p.CategoryId
+                join s in context.Suppliers on p.SupplierId equals s.SupplierId
+                select new GetAllProductDetailsResponseDTO()
+                {
+                    Id = p.ProductId,
+                    CategoryName = c.CategoryName,
+                    Name = p.ProductName,
+                    SupplierName = s.CompanyName,
+                    QuantityPerUnit = p.QuantityPerUnit,
+                    UnitPrice = p.UnitPrice,
+                    UnitsInStock = p.UnitsInStock
+                }).ToList();
+            return Ok(products);
         }
     }
 }
